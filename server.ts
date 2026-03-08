@@ -592,8 +592,8 @@ async function startServer() {
     const vite = await createViteServer({ server: { middlewareMode: true }, appType: "spa" });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(__dirname, "dist")));
-    app.get("*", (req, res) => res.sendFile(path.join(__dirname, "dist", "index.html")));
+    app.use(express.static(path.join(process.cwd(), "dist")));
+    app.get("*", (req, res) => res.sendFile(path.join(process.cwd(), "dist", "index.html")));
   }
 
   app.listen(PORT, "0.0.0.0", () => console.log(`🚀 Server running on port ${PORT}`));
