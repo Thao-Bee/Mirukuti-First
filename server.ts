@@ -10,6 +10,10 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Fix Neon ENETUNREACH IPv6 issue in Node.js 20+ environments
+import dns from "dns";
+dns.setDefaultResultOrder("ipv4first");
+
 const { Pool } = pkg;
 
 // Use Neon/Supabase DB URL from environment variables
