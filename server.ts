@@ -16,9 +16,25 @@ dns.setDefaultResultOrder("ipv4first");
 
 const { Pool } = pkg;
 
-// Use Neon/Supabase DB URL from environment variables
+// Parse Neon DB URL to extract endpoint ID if it's a Neon URL
+let dbUrl = process.env.DATABASE_URL || "";
+if (dbUrl.includes("neon.tech")) {
+  try {
+    const url = new URL(dbUrl);
+    const hostParts = url.hostname.split('.');
+    if (hostParts.length > 0) {
+      const endpointId = hostParts[0];
+      // Append endpoint options to support Neon Serverless SNI routing better 
+      if (!url.searchParams.has("options")) {
+        url.searchParams.set("options", `project=${endpointId}`);
+      }
+      dbUrl = url.toString();
+    }
+  } catch(e) {}
+}
+
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: dbUrl,
   ssl: { rejectUnauthorized: false }, // Required for most managed Postgres services like Neon
   // @ts-ignore: pg passes this to net.Socket to force IPv4
   family: 4 
