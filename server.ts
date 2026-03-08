@@ -19,7 +19,9 @@ const { Pool } = pkg;
 // Use Neon/Supabase DB URL from environment variables
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // Required for most managed Postgres services like Neon
+  ssl: { rejectUnauthorized: false }, // Required for most managed Postgres services like Neon
+  // @ts-ignore: pg passes this to net.Socket to force IPv4
+  family: 4 
 });
 
 // --- DATABASE SCHEMA ---
